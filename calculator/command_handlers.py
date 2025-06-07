@@ -6,7 +6,6 @@ import sys
 
 from calculator.server import Server
 
-
 def calculator() -> None:
     """Handle for running the server for remote calculator."""
     logging.basicConfig(level=logging.DEBUG)
@@ -18,3 +17,8 @@ def calculator() -> None:
 
     server = Server()
     sys.exit(server.main(sys.argv))
+
+def kafka_handler() -> None:
+    """Handle for running the Kafka operation handler."""
+    from calculator import kafka_handler
+    sys.exit(kafka_handler.main())
