@@ -14,10 +14,9 @@ ICE_CALCULATOR_PROXY = "calculator:tcp -h 127.0.0.1 -p 10000"
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("kafka_handler")
 
-def get_calculator_proxy():
-    with Ice.initialize(sys.argv) as communicator:
-        base = communicator.stringToProxy(ICE_CALCULATOR_PROXY)
-        return RemoteCalculator.CalculatorPrx.checkedCast(base)
+def get_calculator_proxy(communicator):
+    base = communicator.stringToProxy(ICE_CALCULATOR_PROXY)
+    return RemoteCalculator.CalculatorPrx.checkedCast(base)
 
 def validate_request(msg):
     try:
@@ -55,7 +54,8 @@ def main():
     producer = Producer({"bootstrap.servers": KAFKA_BROKER})
     consumer.subscribe([REQUEST_TOPIC])
 
-    calculator = get_calculator_proxy()
+    communicator = Ice.initialize(sys.argv)
+    calculator = get_calculator_proxy(communicator)
     if not calculator:
         logger.error("Could not connect to remote calculator service.")
         sys.exit(1)
@@ -114,6 +114,7 @@ def main():
         logger.info("Kafka handler stopped by user.")
     finally:
         consumer.close()
+        communicator.destroy()
 
 if __name__ == "__main__":
     main()
