@@ -5,6 +5,7 @@ import os
 import sys
 
 from calculator.server import Server
+from calculator import kafka_handler as kafka_handler_local
 
 def calculator() -> None:
     """Handle for running the server for remote calculator."""
@@ -20,5 +21,4 @@ def calculator() -> None:
 
 def kafka_handler() -> None:
     """Handle for running the Kafka operation handler."""
-    from calculator import kafka_handler
-    sys.exit(kafka_handler.main())
+    sys.exit(kafka_handler_local.main())
